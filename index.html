@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ ARNOB.SYS ✦ // enter if you dare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Bungee+Shade&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-void: #0a0612;
+    --bg-void-2: #150a24;
+    --lime: #c6ff1a;
+    --lime-dim: #7ea300;
+    --chrome: #d6d6de;
+    --chrome-dark: #8a8a99;
+    --holo-a: #ff2fd0;
+    --holo-b: #2ff7ff;
+    --holo-c: #7b2ff7;
+    --holo-d: #ffd93d;
+    --goth-purple: #1c0f30;
+    --window-bg: #17101f;
+    --font-pixel: 'Press Start 2P', monospace;
+    --font-term: 'VT323', monospace;
+    --font-mono: 'Space Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+
+  body{
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(123,47,247,.25), transparent 55%),
+      radial-gradient(ellipse at 85% 80%, rgba(255,47,208,.18), transparent 50%),
+      linear-gradient(180deg, var(--bg-void) 0%, var(--bg-void-2) 100%);
+    color:var(--chrome);
+    font-family:var(--font-mono);
+    min-height:100vh;
+    overflow-x:hidden;
+    cursor:default;
+    position:relative;
+  }
+
+  /* scanlines + noise overlay */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background:repeating-linear-gradient(
+      0deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px,
+      transparent 1px, transparent 3px
+    );
+    pointer-events:none;
+    z-index:9998;
+    mix-blend-mode:overlay;
+  }
+
+  /* ---------- BOOT SCREEN ---------- */
+  #boot{
+    position:fixed; inset:0; z-index:10000;
+    background:#000;
+    color:var(--lime);
+    font-family:var(--font-term);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:18px;
+    transition:opacity .6s ease;
+  }
+  #boot .logo{
+    font-family:var(--font-pixel);
+    font-size:clamp(14px,3vw,22px);
+    background:linear-gradient(90deg,var(--holo-a),var(--holo-b),var(--holo-c),var(--holo-d),var(--holo-a));
+    background-size:400% 100%;
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:holoshift 4s linear infinite;
+    text-align:center;
+    letter-spacing:2px;
+  }
+  #boot .bar-track{
+    width:min(320px,70vw); height:14px;
+    border:2px solid var(--lime);
+    padding:2px;
+  }
+  #boot .bar-fill{
+    height:100%; width:0%;
+    background:repeating-linear-gradient(90deg,var(--lime) 0 6px, transparent 6px 10px);
+    animation:load 2.4s steps(24) forwards;
+  }
+  #boot .line{ font-size:20px; opacity:.85; }
+  @keyframes load{ to{ width:100%; } }
+  @keyframes holoshift{ to{ background-position:400% 0; } }
+
+  /* ---------- DESKTOP ---------- */
+  #desktop{
+    opacity:0;
+    min-height:100vh;
+    padding:26px 26px 70px;
+    position:relative;
+  }
+
+  .marquee-strip{
+    background:linear-gradient(90deg,var(--holo-c),var(--holo-a),var(--holo-d),var(--holo-b),var(--holo-c));
+    background-size:300% 100%;
+    animation:holoshift 6s linear infinite;
+    color:#0a0612;
+    font-family:var(--font-pixel);
+    font-size:11px;
+    padding:6px 0;
+    white-space:nowrap;
+    overflow:hidden;
+    border-top:2px solid var(--lime);
+    border-bottom:2px solid var(--lime);
+    margin-bottom:26px;
+  }
+  .marquee-strip span{
+    display:inline-block;
+    padding-left:100%;
+    animation:scroll-left 18s linear infinite;
+  }
+  @keyframes scroll-left{ to{ transform:translateX(-100%); } }
+
+  /* desktop icon grid */
+  .icon-grid{
+    display:flex; flex-wrap:wrap; gap:22px;
+    margin-bottom:30px;
+  }
+  .desktop-icon{
+    width:88px; text-align:center;
+    font-family:var(--font-term); font-size:15px;
+    color:var(--chrome); cursor:pointer;
+    user-select:none;
+  }
+  .desktop-icon .ico{
+    width:46px; height:46px; margin:0 auto 6px;
+    background:var(--window-bg);
+    border:2px solid var(--lime);
+    box-shadow:0 0 12px rgba(198,255,26,.35);
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px;
+    transition:transform .15s ease;
+  }
+  .desktop-icon:hover .ico{ transform:scale(1.08) rotate(-2deg); box-shadow:0 0 18px rgba(198,255,26,.6); }
+  .desktop-icon:active .ico{ transform:scale(.95); }
+
+  /* headline block */
+  .headline{
+    margin:10px 0 34px;
+  }
+  .headline h1{
+    font-family:'Bungee Shade', var(--font-pixel);
+    font-size:clamp(30px,7vw,68px);
+    margin:0;
+    line-height:1.05;
+    background:linear-gradient(90deg,var(--holo-b),var(--holo-a),var(--holo-d),var(--holo-c),var(--holo-b));
+    background-size:400% 100%;
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:holoshift 7s linear infinite;
+    text-shadow:0 0 30px rgba(255,47,208,.25);
+  }
+  .headline .tagline{
+    font-family:var(--font-term);
+    font-size:20px;
+    color:var(--lime);
+    margin-top:6px;
+    letter-spacing:1px;
+  }
+  .badge-row{
+    display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;
+  }
+  .badge{
+    font-family:var(--font-pixel); font-size:9px;
+    border:1px solid var(--lime); color:var(--lime);
+    padding:6px 9px; letter-spacing:.5px;
+  }
+
+  /* ---------- WINDOWS ---------- */
+  .windows-area{
+    display:flex; flex-wrap:wrap; gap:24px;
+    align-items:flex-start;
+  }
+
+  .win{
+    width:340px;
+    background:var(--window-bg);
+    border:2px solid var(--chrome-dark);
+    box-shadow: 4px 4px 0 rgba(0,0,0,.5), 0 0 24px rgba(123,47,247,.15);
+    position:relative;
+  }
+  .win-title{
+    background:linear-gradient(90deg, var(--goth-purple), #2a1140 60%, var(--holo-c));
+    color:var(--lime);
+    font-family:var(--font-pixel);
+    font-size:10px;
+    padding:8px 8px;
+    display:flex; align-items:center; justify-content:space-between;
+    cursor:grab;
+    border-bottom:2px solid var(--lime);
+    letter-spacing:1px;
+  }
+  .win-title:active{ cursor:grabbing; }
+  .win-dots{ display:flex; gap:5px; }
+  .win-dots span{
+    width:10px; height:10px; display:inline-block;
+    background:var(--chrome); border:1px solid #000;
+  }
+  .win-dots span:nth-child(1){ background:var(--holo-a); }
+  .win-dots span:nth-child(2){ background:var(--holo-d); }
+  .win-dots span:nth-child(3){ background:var(--lime); }
+  .win-body{
+    padding:16px 16px 18px;
+    font-family:var(--font-term);
+    font-size:17px;
+    line-height:1.4;
+    color:var(--chrome);
+  }
+  .win-body p{ margin:0 0 10px; }
+  .win-body .glow{ color:var(--lime); }
+
+  /* about window specifics */
+  .stat-line{
+    display:flex; justify-content:space-between;
+    font-family:var(--font-mono); font-size:12px;
+    border-bottom:1px dashed var(--chrome-dark);
+    padding:4px 0;
+  }
+  .stat-line b{ color:var(--holo-b); font-weight:700; }
+
+  /* socials window */
+  .social-link{
+    display:flex; align-items:center; gap:10px;
+    padding:8px 0;
+    border-bottom:1px dotted var(--chrome-dark);
+    text-decoration:none;
+    color:var(--chrome);
+  }
+  .social-link:last-child{ border-bottom:none; }
+  .social-link .tag{
+    font-family:var(--font-pixel); font-size:9px;
+    color:#0a0612; background:var(--lime);
+    padding:4px 6px;
+    min-width:44px; text-align:center;
+  }
+  .social-link:hover{ color:var(--holo-a); }
+  .social-link .val{ font-size:16px; }
+
+  /* now playing widget */
+  .player{
+    display:flex; gap:12px; align-items:center;
+  }
+  .cd{
+    width:64px; height:64px; border-radius:50%;
+    background:conic-gradient(from 0deg, var(--holo-a), var(--holo-b), var(--holo-c), var(--holo-d), var(--holo-a));
+    position:relative;
+    animation:spin 3.2s linear infinite;
+    flex:none;
+    box-shadow:0 0 14px rgba(255,47,208,.4);
+  }
+  .cd::after{
+    content:""; position:absolute; inset:0; margin:auto;
+    width:20px; height:20px; border-radius:50%;
+    background:var(--window-bg); border:2px solid #000;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .track-info .t-title{ color:var(--lime); font-size:18px; }
+  .track-info .t-artist{ font-size:14px; color:var(--chrome-dark); }
+  .eq{ display:flex; gap:3px; align-items:flex-end; height:22px; margin-top:8px; }
+  .eq span{
+    width:4px; background:var(--holo-b);
+    animation:bounce 1s ease-in-out infinite;
+  }
+  .eq span:nth-child(1){ animation-delay:0s; height:60%;}
+  .eq span:nth-child(2){ animation-delay:.15s; height:100%;}
+  .eq span:nth-child(3){ animation-delay:.3s; height:40%;}
+  .eq span:nth-child(4){ animation-delay:.45s; height:80%;}
+  .eq span:nth-child(5){ animation-delay:.6s; height:55%;}
+  @keyframes bounce{ 0%,100%{ transform:scaleY(.4);} 50%{ transform:scaleY(1);} }
+  .progress-track{
+    height:6px; background:#000; margin-top:10px;
+    border:1px solid var(--chrome-dark);
+  }
+  .progress-fill{
+    height:100%; width:34%;
+    background:linear-gradient(90deg,var(--lime),var(--holo-b));
+  }
+
+  /* guestbook window */
+  #gb-form{ display:flex; flex-direction:column; gap:8px; margin-top:6px; }
+  #gb-form input{
+    background:#000; border:1px solid var(--chrome-dark);
+    color:var(--lime); font-family:var(--font-term); font-size:16px;
+    padding:6px 8px;
+  }
+  #gb-form button{
+    background:var(--lime); color:#0a0612;
+    font-family:var(--font-pixel); font-size:10px;
+    border:none; padding:9px; cursor:pointer;
+    letter-spacing:1px;
+  }
+  #gb-form button:hover{ background:var(--holo-d); }
+  #gb-entries{
+    margin-top:12px; max-height:130px; overflow-y:auto;
+    display:flex; flex-direction:column; gap:8px;
+  }
+  #gb-entries .entry{
+    border-left:3px solid var(--holo-c);
+    padding:4px 8px; font-size:15px;
+  }
+  #gb-entries .entry b{ color:var(--holo-b); }
+
+  /* inside jokes ticker window */
+  .joke-box{
+    text-align:center; padding:6px 0;
+  }
+  .joke-box .joke-txt{
+    font-size:16px; color:var(--holo-d); min-height:44px;
+  }
+  .joke-box button{
+    margin-top:8px;
+    background:transparent; border:1px solid var(--lime); color:var(--lime);
+    font-family:var(--font-pixel); font-size:9px;
+    padding:7px 10px; cursor:pointer;
+  }
+  .joke-box button:hover{ background:var(--lime); color:#0a0612; }
+
+  /* taskbar */
+  #taskbar{
+    position:fixed; left:0; right:0; bottom:0; z-index:500;
+    height:44px;
+    background:linear-gradient(180deg, #221033, #0a0612);
+    border-top:2px solid var(--lime);
+    display:flex; align-items:center;
+    padding:0 12px;
+    font-family:var(--font-pixel); font-size:10px;
+    justify-content:space-between;
+  }
+  #taskbar .start{
+    background:var(--lime); color:#0a0612;
+    padding:8px 12px; cursor:default;
+  }
+  #taskbar .clock{ color:var(--chrome); }
+  #taskbar .visits{ color:var(--holo-b); }
+
+  footer.credit{
+    text-align:center; font-family:var(--font-term); font-size:14px;
+    color:var(--chrome-dark); margin:36px 0 20px;
+  }
+
+  ::-webkit-scrollbar{ width:10px; }
+  ::-webkit-scrollbar-track{ background:#000; }
+  ::-webkit-scrollbar-thumb{ background:var(--lime); }
+
+  /* sparkle cursor trail */
+  .sparkle{
+    position:fixed; width:6px; height:6px; pointer-events:none; z-index:9999;
+    background:var(--lime); border-radius:50%;
+    animation:sparkle-fade .6s ease-out forwards;
+  }
+  @keyframes sparkle-fade{
+    to{ opacity:0; transform:translateY(-14px) scale(.3); }
+  }
+
+  @media (max-width:480px){
+    .win{ width:100%; }
+    .windows-area{ gap:18px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="boot">
+  <div class="logo">A R N O B . S Y S</div>
+  <div class="line">loading enigma_kernel.dll ...</div>
+  <div class="bar-track"><div class="bar-fill"></div></div>
+</div>
+
+<div id="desktop">
+
+  <div class="marquee-strip"><span>✦ WELCOME TO ARNOB.SYS ✦ BEST VIEWED IN 800×600 ✦ DIAL-UP RECOMMENDED FOR AUTHENTIC LAG ✦ DO NOT FEED AFTER MIDNIGHT ✦ CERTIFIED MYSTERIOUS SINCE Y2K ✦</span></div>
+
+  <div class="icon-grid">
+    <div class="desktop-icon" onclick="document.getElementById('win-about').scrollIntoView({behavior:'smooth'})">
+      <div class="ico">👤</div>ABOUT.EXE
+    </div>
+    <div class="desktop-icon" onclick="document.getElementById('win-social').scrollIntoView({behavior:'smooth'})">
+      <div class="ico">📡</div>LINKS.LNK
+    </div>
+    <div class="desktop-icon" onclick="document.getElementById('win-player').scrollIntoView({behavior:'smooth'})">
+      <div class="ico">💿</div>PLAYER.MP3
+    </div>
+    <div class="desktop-icon" onclick="document.getElementById('win-guestbook').scrollIntoView({behavior:'smooth'})">
+      <div class="ico">📓</div>GBOOK.TXT
+    </div>
+    <div class="desktop-icon" onclick="document.getElementById('win-jokes').scrollIntoView({behavior:'smooth'})">
+      <div class="ico">🕳️</div>SECRETS.BAT
+    </div>
+    <div class="desktop-icon" onclick="alert('ERROR 404: recycle bin contains only vibes.')">
+      <div class="ico">🗑️</div>RECYCLE
+    </div>
+  </div>
+
+  <div class="headline">
+    <h1>JAHIDUL ISLAM<br>ARNOB</h1>
+    <div class="tagline">&gt; currently: unemployed_by_choice.exe</div>
+    <div class="badge-row">
+      <span class="badge">STUDENT</span>
+      <span class="badge">GHOST IN THE MACHINE</span>
+      <span class="badge">STATUS: LURKING</span>
+      <span class="badge">EST. UNKNOWN</span>
+    </div>
+  </div>
+
+  <div class="windows-area">
+
+    <div class="win" id="win-about">
+      <div class="win-title"><span>ABOUT.EXE</span><div class="win-dots"><span></span><span></span><span></span></div></div>
+      <div class="win-body">
+        <p>He doesn't introduce himself. He just shows up in your notifications, your group chats, your peripheral vision — and then he's gone again before you can ask how he knew that thing about you.</p>
+        <p>Officially: a <span class="glow">student</span>. Unofficially: between missions. He calls it "unemployed." The universe calls it "recharging."</p>
+        <div class="stat-line"><span>ROLE</span><b>Student / Full-Time Enigma</b></div>
+        <div class="stat-line"><span>EMPLOYMENT</span><b>Voluntarily Unclear</b></div>
+        <div class="stat-line"><span>LOCATION</span><b>[REDACTED]</b></div>
+        <div class="stat-line"><span>THREAT LEVEL</span><b>Mysteriously Chill</b></div>
+      </div>
+    </div>
+
+    <div class="win" id="win-social">
+      <div class="win-title"><span>LINKS.LNK</span><div class="win-dots"><span></span><span></span><span></span></div></div>
+      <div class="win-body">
+        <a class="social-link" href="https://instagram.com/jahidul.arnob" target="_blank" rel="noopener">
+          <span class="tag">IG</span><span class="val">@jahidul.arnob</span>
+        </a>
+        <a class="social-link" href="https://facebook.com" target="_blank" rel="noopener">
+          <span class="tag">FB</span><span class="val">Jahidul Islam Arnob</span>
+        </a>
+        <a class="social-link" href="tel:01339711192">
+          <span class="tag">CALL</span><span class="val">01339711192</span>
+        </a>
+        <a class="social-link" href="mailto:jahidulislam.arnob@icloud.com">
+          <span class="tag">MAIL</span><span class="val">jahidulislam.arnob@icloud.com</span>
+        </a>
+        <p style="margin-top:10px; font-size:14px; color:var(--chrome-dark);">// summon responsibly. replies not guaranteed, mystery is.</p>
+      </div>
+    </div>
+
+    <div class="win" id="win-player">
+      <div class="win-title"><span>NOWPLAYING.MP3</span><div class="win-dots"><span></span><span></span><span></span></div></div>
+      <div class="win-body">
+        <div class="player">
+          <div class="cd"></div>
+          <div class="track-info">
+            <div class="t-title">Frank Ocean</div>
+            <div class="t-artist">from the album "Blonde"</div>
+          </div>
+        </div>
+        <div class="eq"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="progress-track"><div class="progress-fill"></div></div>
+        <p style="margin-top:10px; font-size:13px; color:var(--chrome-dark);">on loop in arnob's head, indefinitely.</p>
+      </div>
+    </div>
+
+    <div class="win" id="win-guestbook">
+      <div class="win-title"><span>GUESTBOOK.TXT</span><div class="win-dots"><span></span><span></span><span></span></div></div>
+      <div class="win-body">
+        <p>Leave your mark. He will read it. Whether he replies is part of the mystery.</p>
+        <form id="gb-form" onsubmit="return addEntry(event)">
+          <input type="text" id="gb-name" placeholder="your name" required>
+          <input type="text" id="gb-msg" placeholder="your message" required>
+          <button type="submit">SIGN &gt;&gt;</button>
+        </form>
+        <div id="gb-entries"></div>
+      </div>
+    </div>
+
+    <div class="win" id="win-jokes">
+      <div class="win-title"><span>SECRETS.BAT</span><div class="win-dots"><span></span><span></span><span></span></div></div>
+      <div class="win-body joke-box">
+        <div class="joke-txt" id="joke-out">click to decrypt a fact about arnob</div>
+        <button onclick="nextJoke()">DECRYPT &gt;&gt;</button>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="credit">
+    ✦ arnob.sys — handcrafted in a basement lit only by monitor glow ✦<br>
+    view source. remix it. make it weirder. that's the whole point.
+  </footer>
+</div>
+
+<div id="taskbar">
+  <div class="start">START ▸</div>
+  <div class="clock" id="clock">00:00:00</div>
+  <div class="visits" id="visits">VISITORS: 000001</div>
+</div>
+
+<script>
+  // boot sequence
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const boot = document.getElementById('boot');
+      const desk = document.getElementById('desktop');
+      boot.style.opacity = '0';
+      desk.style.transition = 'opacity .8s ease';
+      desk.style.opacity = '1';
+      setTimeout(() => boot.style.display = 'none', 650);
+    }, 2500);
+  });
+
+  // clock
+  function tick(){
+    const d = new Date();
+    document.getElementById('clock').textContent = d.toLocaleTimeString();
+  }
+  setInterval(tick, 1000); tick();
+
+  // fake visitor counter, persists per session only
+  let visits = Math.floor(Math.random()*8000)+1200;
+  document.getElementById('visits').textContent = 'VISITORS: ' + String(visits).padStart(6,'0');
+  setInterval(()=>{
+    if(Math.random() < 0.3){
+      visits++;
+      document.getElementById('visits').textContent = 'VISITORS: ' + String(visits).padStart(6,'0');
+    }
+  }, 4000);
+
+  // draggable windows (desktop only, simple)
+  document.querySelectorAll('.win').forEach(win => {
+    const title = win.querySelector('.win-title');
+    let dragging = false, offX=0, offY=0;
+    title.addEventListener('mousedown', e => {
+      if(window.innerWidth < 700) return; // skip drag on mobile
+      dragging = true;
+      win.style.position = 'relative';
+      offX = e.clientX - win.getBoundingClientRect().left;
+      offY = e.clientY - win.getBoundingClientRect().top;
+      win.style.zIndex = 50;
+    });
+    document.addEventListener('mousemove', e => {
+      if(!dragging) return;
+      win.style.position = 'fixed';
+      win.style.left = (e.clientX - offX) + 'px';
+      win.style.top = (e.clientY - offY) + 'px';
+    });
+    document.addEventListener('mouseup', () => dragging = false);
+  });
+
+  // guestbook
+  function addEntry(e){
+    e.preventDefault();
+    const name = document.getElementById('gb-name').value.trim();
+    const msg = document.getElementById('gb-msg').value.trim();
+    if(!name || !msg) return false;
+    const el = document.createElement('div');
+    el.className = 'entry';
+    el.innerHTML = '<b>' + name.replace(/</g,'&lt;') + ':</b> ' + msg.replace(/</g,'&lt;');
+    document.getElementById('gb-entries').prepend(el);
+    document.getElementById('gb-form').reset();
+    return false;
+  }
+
+  // inside jokes / "secrets"
+  const secrets = [
+    "arnob once said 'brb' and did not, in fact, come right back. it has been years.",
+    "his LinkedIn headline is just three dots: '...'",
+    "he has never once used the front door of a conversation. only side entrances.",
+    "his resume lists 'vibes' under skills. references available upon mysterious request.",
+    "legend says he replies to texts at exactly one (1) random hour per week.",
+    "he is technically unemployed but somehow always 'in a meeting.'",
+    "his search history is a certified crime scene. no further comment.",
+    "he once ghosted a group project and the project got better.",
+    "certified professional lurker. decorated in absolutely no ceremonies.",
+    "he doesn't do small talk. he does small silences, dramatically."
+  ];
+  function nextJoke(){
+    const out = document.getElementById('joke-out');
+    const pick = secrets[Math.floor(Math.random()*secrets.length)];
+    out.style.opacity = 0;
+    setTimeout(()=>{ out.textContent = pick; out.style.opacity = 1; }, 150);
+  }
+
+  // sparkle cursor trail
+  document.addEventListener('mousemove', e => {
+    if(Math.random() > 0.55) return;
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    s.style.left = (e.clientX-3) + 'px';
+    s.style.top = (e.clientY-3) + 'px';
+    const colors = ['#c6ff1a','#ff2fd0','#2ff7ff','#ffd93d'];
+    s.style.background = colors[Math.floor(Math.random()*colors.length)];
+    document.body.appendChild(s);
+    setTimeout(()=> s.remove(), 650);
+  });
+</script>
+
+</body>
+</html>
